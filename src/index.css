@@ -1,0 +1,131 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 220 25% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 25% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 25% 10%;
+
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 214 40% 96%;
+    --secondary-foreground: 220 25% 15%;
+
+    --muted: 210 20% 96%;
+    --muted-foreground: 220 10% 46%;
+
+    --accent: 217 91% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 28% 91%;
+    --input: 214 28% 91%;
+    --ring: 217 91% 60%;
+
+    --radius: 1rem;
+
+    /* Soft surfaces */
+    --surface: 210 40% 99%;
+    --surface-tint: 214 60% 97%;
+    --surface-tint-strong: 216 70% 94%;
+    --success: 152 55% 42%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 30 40% 12%;
+
+    /* Layered depth */
+    --card-shadow: 0 1px 2px hsl(217 40% 25% / 0.04), 0 4px 12px -2px hsl(217 40% 25% / 0.06), 0 12px 32px -8px hsl(217 40% 25% / 0.07);
+    --card-shadow-hover: 0 2px 4px hsl(217 40% 25% / 0.05), 0 10px 24px -4px hsl(217 60% 40% / 0.12), 0 24px 56px -12px hsl(217 60% 40% / 0.16);
+    --shadow-soft: 0 1px 2px hsl(217 40% 25% / 0.03), 0 6px 18px -6px hsl(217 40% 25% / 0.08);
+    --shadow-glow: 0 8px 28px -6px hsl(var(--primary) / 0.35);
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217 91% 60%;
+  }
+
+  .dark {
+    --background: 220 20% 7%;
+    --foreground: 210 20% 95%;
+    --card: 220 20% 10%;
+    --card-foreground: 210 20% 95%;
+    --popover: 220 20% 10%;
+    --popover-foreground: 210 20% 95%;
+    --primary: 217 91% 65%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 15% 15%;
+    --secondary-foreground: 210 20% 90%;
+    --muted: 220 15% 15%;
+    --muted-foreground: 215 15% 60%;
+    --accent: 217 91% 65%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 220 15% 18%;
+    --input: 220 15% 18%;
+    --ring: 217 91% 65%;
+
+    --surface: 220 20% 11%;
+    --surface-tint: 220 22% 13%;
+    --surface-tint-strong: 220 24% 17%;
+    --success: 152 45% 45%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 85% 55%;
+    --warning-foreground: 30 40% 12%;
+
+    --card-shadow: 0 1px 2px hsl(0 0% 0% / 0.4), 0 8px 24px -8px hsl(0 0% 0% / 0.5);
+    --card-shadow-hover: 0 2px 6px hsl(0 0% 0% / 0.45), 0 18px 40px -10px hsl(0 0% 0% / 0.6);
+    --shadow-soft: 0 4px 16px -6px hsl(0 0% 0% / 0.5);
+    --shadow-glow: 0 8px 28px -6px hsl(var(--primary) / 0.4);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply text-primary;
+  }
+  .bg-hero-gradient {
+    @apply bg-primary;
+  }
+  .surface-card {
+    @apply rounded-2xl border border-border/70 bg-card shadow-card transition-all duration-300;
+  }
+  .surface-card-hover {
+    @apply hover:-translate-y-1 hover:border-primary/30 hover:shadow-card-hover;
+  }
+  .tint-panel {
+    @apply rounded-3xl bg-surface-tint;
+  }
+  .pill {
+    @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium;
+  }
+}
