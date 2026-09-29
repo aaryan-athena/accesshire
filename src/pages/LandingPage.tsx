@@ -7,7 +7,7 @@ import { isRecommendable } from "@/lib/canonical";
 import {
   UserPlus, ClipboardCheck, Briefcase, TrendingUp,
   Eye, Keyboard, SunMoon, Captions, MessageSquareText, LayoutList,
-  ChevronDown, Star, Building2, Brain, Accessibility
+  ChevronDown, Star, Building2, Brain, Accessibility, Users, HeartHandshake, ShieldCheck, MapPin
 } from "lucide-react";
 
 const steps = [
@@ -53,12 +53,6 @@ const assessmentMethods = [
   },
 ];
 
-const testimonials = [
-  { name: "[Name] placeholder", role: "[Role] placeholder", quote: "[Testimonial quote] placeholder" },
-  { name: "[Name] placeholder", role: "[Role] placeholder", quote: "[Testimonial quote] placeholder" },
-  { name: "[Name] placeholder", role: "[Role] placeholder", quote: "[Testimonial quote] placeholder" },
-];
-
 const faqs = [
   { q: "Is AccessHire free to use?", a: "Yes, our core platform is completely free for job seekers. Employers pay for premium posting features." },
   { q: "What types of disabilities do you support?", a: "AccessHire has two assessments: one for neurodivergent people (autism, ADHD, dyslexia and related conditions, and intellectual disability) and one for people with physical and sensory disabilities (mobility, vision and hearing). Many people take both." },
@@ -67,8 +61,23 @@ const faqs = [
 ];
 
 const LandingPage = () => {
-  const { data } = useJobFeed();
+  const { data, isLoading: feedLoading } = useJobFeed();
   const openRoles = data?.jobs.filter((j) => isRecommendable(j.availability_status)).length;
+  // These two are both counted over the same "employers listed" universe (named
+  // companies only), so the numbers never contradict each other on the page.
+  const pledgedEmployers = data?.companies.filter((c) => c.pledgeAccepted).length;
+  const withAccessInfo = data?.jobs.filter(
+    (j) => Object.keys(j.physical_access ?? {}).length > 0 || Object.keys(j.neuro_practices ?? {}).length > 0,
+  ).length;
+  const cityCount = data ? new Set(data.jobs.flatMap((j) => j.cities ?? [])).size : undefined;
+
+  const platformStats = [
+    { icon: Briefcase, value: openRoles, label: "open roles right now" },
+    { icon: Building2, value: data?.companies.length, label: "employers listed" },
+    { icon: HeartHandshake, value: pledgedEmployers, label: "pledged to hire PWD candidates" },
+    { icon: ShieldCheck, value: withAccessInfo, label: "roles with published access info" },
+    { icon: MapPin, value: cityCount, label: "cities with open roles" },
+  ];
 
   return (
     <main>
@@ -211,21 +220,28 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="bg-surface-tint py-20">
+      {/* Platform at a glance — live numbers, not testimonials, since AccessHire has no
+          reviews to publish yet. Updates automatically as employers and roles are added. */}
+      <section aria-labelledby="platform-glance" className="bg-surface-tint py-20">
         <div className="container">
-          <h2 className="text-center text-3xl font-bold md:text-4xl">What People Say</h2>
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {testimonials.map((t, i) => (
-              <div key={i} className="surface-card surface-card-hover min-w-0 p-7">
-                <div className="mb-3 flex gap-1">
-                  {[...Array(5)].map((_, j) => <Star key={j} className="h-4 w-4 fill-primary text-primary" />)}
+          <div className="mx-auto max-w-2xl text-center">
+            <span className="pill mx-auto bg-primary/10 text-primary">
+              <Users className="h-3.5 w-3.5" /> Live platform data
+            </span>
+            <h2 id="platform-glance" className="mt-4 text-3xl font-bold md:text-4xl">AccessHire, right now</h2>
+            <p className="mt-3 text-muted-foreground">
+              We're a new platform, so instead of quotes we can't yet back up, here's what's
+              actually listed today.
+            </p>
+          </div>
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
+            {platformStats.map((s, i) => (
+              <div key={i} className="surface-card surface-card-hover flex flex-col items-center p-6 text-center">
+                <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                  <s.icon className="h-5 w-5" aria-hidden="true" />
                 </div>
-                <p className="text-sm leading-relaxed text-muted-foreground">"{t.quote}"</p>
-                <div className="mt-4 border-t border-border/70 pt-4">
-                  <div className="font-semibold text-sm">{t.name}</div>
-                  <div className="text-xs text-muted-foreground">{t.role}</div>
-                </div>
+                <div className="text-2xl font-bold tabular-nums">{feedLoading ? "–" : s.value ?? 0}</div>
+                <div className="mt-1 text-xs text-muted-foreground">{s.label}</div>
               </div>
             ))}
           </div>

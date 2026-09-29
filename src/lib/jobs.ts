@@ -17,6 +17,10 @@ export interface CompanySummary {
   cities: string[];
   roles: number;
   openRoles: number;
+  /** True if any of this company's own submissions took the PWD hiring pledge. */
+  pledgeAccepted: boolean;
+  /** True if any role publishes physical-access or neuro-practice information. */
+  hasAccessInfo: boolean;
 }
 
 export interface JobFeed {
@@ -25,6 +29,8 @@ export interface JobFeed {
   companies: CompanySummary[];
   fetchedAt: string;
 }
+
+const nonEmpty = (v: unknown) => Boolean(v) && Object.keys(v as object).length > 0;
 
 export async function fetchJobFeed(): Promise<JobFeed> {
   const snapshot = await getDocs(collection(db, COLLECTIONS.companies));
@@ -48,9 +54,13 @@ export async function fetchJobFeed(): Promise<JobFeed> {
       cities: job.cities,
       roles: 0,
       openRoles: 0,
+      pledgeAccepted: false,
+      hasAccessInfo: false,
     };
     entry.roles += 1;
     if (isRecommendable(job.availability_status)) entry.openRoles += 1;
+    if (job.inclusion?.pledge_accepted) entry.pledgeAccepted = true;
+    if (nonEmpty(job.physical_access) || nonEmpty(job.neuro_practices)) entry.hasAccessInfo = true;
     byCompany.set(key, entry);
   }
 
